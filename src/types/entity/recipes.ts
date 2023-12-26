@@ -13,4 +13,5 @@ export type RecipeTypes = {
   userId: number;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 };
