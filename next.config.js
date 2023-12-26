@@ -9,11 +9,16 @@ const nextConfig = {
   swcMinify: true,
 
   // Uncoment to add domain whitelist
-  // images: {
-  //   domains: [
-  //     'res.cloudinary.com',
-  //   ],
-  // },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.simplyrecipes.com',
+        port: '',
+        pathname: '/thmb/**',
+      },
+    ],
+  },
 
   // SVGR
   webpack(config) {
