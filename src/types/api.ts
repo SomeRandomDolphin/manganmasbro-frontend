@@ -1,11 +1,14 @@
-export type ApiResponse<T> = {
-  code: string;
+export interface ApiResponse<T> {
   data: T;
-};
-
-export type ApiError = {
   message: string;
-};
+  status: number;
+}
+
+export interface ApiError {
+  code?: number;
+  message: string;
+  status: number;
+}
 
 export type UninterceptedApiError = {
   message: string | Record<string, string[]>;
