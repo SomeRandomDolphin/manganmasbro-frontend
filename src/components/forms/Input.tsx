@@ -32,6 +32,7 @@ export type InputProps = {
   leftIcon?: IconType | string;
   rightNode?: React.ReactNode;
   containerClassName?: string;
+  required?: boolean;
 } & React.ComponentPropsWithoutRef<'input'>;
 
 export default function Input({
@@ -47,6 +48,7 @@ export default function Input({
   leftIcon: LeftIcon,
   rightNode,
   containerClassName,
+  required = false,
   ...rest
 }: InputProps) {
   const {
@@ -60,7 +62,7 @@ export default function Input({
     <div className={containerClassName}>
       {withLabel && (
         <Typography as='label' variant='s3' className='block' htmlFor={id}>
-          {label}
+          {label} {required && <span className='text-red-500'>*</span>}
         </Typography>
       )}
       <div className={clsx('relative', withLabel && 'mt-1')}>
