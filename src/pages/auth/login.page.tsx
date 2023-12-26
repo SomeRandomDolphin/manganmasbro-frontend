@@ -19,44 +19,55 @@ import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 import Typography from '@/components/typography/Typography';
 
-import REGEX from '@/constant/regex';
+import useAuthStore from '@/store/useAuthStore';
 
-type RegistrationFormData = {
-  username: string;
+import { ApiResponse } from '@/types/api';
+import { User } from '@/types/entity/user';
+
+type LoginFormData = {
   email: string;
   password: string;
 };
 
-export default withAuth(RegisterPage, 'public');
-function RegisterPage() {
+export default withAuth(LoginPage, 'public');
+function LoginPage() {
   const router = useRouter();
+  const login = useAuthStore.useLogin();
   const methods = useForm({
     mode: 'onTouched',
   });
 
   const { handleSubmit } = methods;
 
-  const { mutate: handleRegister, isLoading } = useMutationToast<
+  const { mutate: handleLogin, isLoading } = useMutationToast<
     void,
-    RegistrationFormData
+    LoginFormData
   >(
     useMutation(async (data) => {
-      await api.post('/users/register', data);
-      router.push('/auth/login');
+      const res = await api.post('/login_user', data);
+      const { accessToken } = res.data.data;
+      localStorage.setItem('token', accessToken);
+
+      const user = await api.get<ApiResponse<User>>('/auth/me');
+
+      if (!user.data.data) {
+        throw new Error('Sesi login tidak valid');
+      }
+      login({ ...user.data.data, accessToken });
+      router.push('/dashboard');
     })
   );
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    handleRegister(data as RegistrationFormData);
+    handleLogin(data as LoginFormData);
   };
-
   return (
     <main className='flex h-screen w-full flex-row items-center justify-center'>
-      <Seo templateTitle='Register' />
+      <Seo templateTitle='Login' />
       <section className='hidden h-full w-1/2 overflow-hidden lg:block'>
         <NextImage
-          src='/images/auth/register.png'
-          alt='Register'
+          src='/images/auth/login.png'
+          alt='Login'
           width={720}
           height={1024}
           className='h-full'
@@ -68,56 +79,27 @@ function RegisterPage() {
             onSubmit={handleSubmit(onSubmit)}
             className='mx-auto flex w-3/4 flex-col gap-6'
           >
-            <Typography variant='j1'>Sign Up</Typography>
+            <Typography variant='j1'>Sign in</Typography>
             <Typography variant='b1'>
-              Ready to spice things up? Register now and embark on a culinary
-              exploration!
+              Savor the flavors! Log in to your account and let the culinary
+              journey begin.
             </Typography>
             <div className='flex flex-col gap-8'>
               <div className='flex flex-col gap-3'>
                 <Input
-                  id='username'
-                  label='Username'
-                  validation={{
-                    required: 'Email must be filled',
-                    pattern: {
-                      value: REGEX.USERNAME,
-                      message:
-                        'Username must be letters, numbers, dots, or underscores',
-                    },
-                  }}
-                  placeholder='Enter your username'
-                  required
-                  helperText="Choose a username with letters, numbers, dots, and underscores. It can't start or end with dots or underscores. Be unique, be you!"
-                />
-                <Input
                   id='email'
                   label='Email'
-                  validation={{
-                    required: 'Email must be filled',
-                    pattern: {
-                      value: REGEX.EMAIL,
-                      message: 'Email must be valid',
-                    },
-                  }}
+                  validation={{ required: 'Email must be filled' }}
                   placeholder='Enter your email'
                   required
                 />
                 <Input
                   id='password'
                   label='Password'
-                  validation={{
-                    required: 'Password must be filled',
-                    pattern: {
-                      value: REGEX.PASSWORD,
-                      message:
-                        'Password must be at least one uppercase letter, one lowercase letter, a number, and a symbol. Ensure your password is a minimum of 12 characters long.',
-                    },
-                  }}
+                  validation={{ required: 'Password must be filled' }}
                   placeholder='Enter your password'
                   type='password'
                   required
-                  helperText='Include at least one uppercase letter, one lowercase letter, a number, and a symbol. Ensure your password is a minimum of 12 characters long. Mix it up for maximum protection!'
                 />
               </div>
               <Button
@@ -126,13 +108,12 @@ function RegisterPage() {
                 type='submit'
                 isLoading={isLoading}
               >
-                Register
+                Login
               </Button>
             </div>
             <Typography variant='b1'>
-              Already part of our community?{' '}
-              <PrimaryLink href='/auth/login'>Sign in</PrimaryLink> to continue
-              your journey.
+              New to Mangan Mas Bro? Join the community and create your account{' '}
+              <PrimaryLink href='/auth/register'>here</PrimaryLink>
             </Typography>
           </form>
         </FormProvider>
