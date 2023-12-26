@@ -13,6 +13,7 @@ import useMutationToast from '@/hooks/toast/useMutationToast';
 
 import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
+import withAuth from '@/components/hoc/withAuth';
 import PrimaryLink from '@/components/links/PrimaryLink';
 import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
@@ -26,7 +27,8 @@ type RegistrationFormData = {
   password: string;
 };
 
-export default function RegisterPage() {
+export default withAuth(RegisterPage, 'public');
+function RegisterPage() {
   const router = useRouter();
   const methods = useForm({
     mode: 'onTouched',
