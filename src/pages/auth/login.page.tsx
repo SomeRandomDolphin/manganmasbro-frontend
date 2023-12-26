@@ -44,7 +44,7 @@ function LoginPage() {
     LoginFormData
   >(
     useMutation(async (data) => {
-      const res = await api.post('/login_user', data);
+      const res = await api.post('/auth/login', data);
       const { accessToken } = res.data.data;
       localStorage.setItem('token', accessToken);
 
