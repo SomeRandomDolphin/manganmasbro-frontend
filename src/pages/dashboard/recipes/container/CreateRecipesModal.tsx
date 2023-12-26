@@ -19,7 +19,7 @@ import Typography from '@/components/typography/Typography';
 
 import { RecipeCreateTypes } from '@/types/entity/recipes';
 
-const Category = [
+export const Category = [
   'Beef',
   'Chicken',
   'Seafood',
@@ -36,7 +36,7 @@ const Category = [
   'Desserts',
 ];
 
-const Origin = [
+export const Origin = [
   'Asian',
   'Middle Eastern',
   'Indian',

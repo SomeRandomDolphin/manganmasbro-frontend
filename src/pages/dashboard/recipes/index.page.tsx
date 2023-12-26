@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import Button from '@/components/buttons/Button';
 import RecipeCard from '@/components/cards/RecipeCard';
+import withAuth from '@/components/hoc/withAuth';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 import Typography from '@/components/typography/Typography';
@@ -13,7 +14,8 @@ import CreateRecipesModal from '@/pages/dashboard/recipes/container/CreateRecipe
 import { ApiResponse } from '@/types/api';
 import { RecipeTypes } from '@/types/entity/recipes';
 
-export default function HomePage() {
+export default withAuth(DashboardRecipes, 'user');
+function DashboardRecipes() {
   const { data: queryData } = useQuery<ApiResponse<RecipeTypes[]>>([
     `/recipes/me`,
   ]);
@@ -42,7 +44,7 @@ export default function HomePage() {
               {recipes?.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
-                  href={`/recipes/${recipe.id}`}
+                  href={`/dashboard/recipes/${recipe.id}`}
                   recipe={recipe}
                 />
               ))}
