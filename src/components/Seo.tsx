@@ -1,21 +1,15 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { openGraph } from '@/lib/helper';
-
 const defaultMeta = {
-  title: 'Aether Design System',
-  siteName: 'Aether Design System',
-  description: 'Design system used on projects',
+  title: 'Mangan Mas Bro!',
+  siteName: 'Mangan Mas Bro!',
+  description:
+    'Mangan Mas Bro adalah aplikasi untuk menemukan dan menyajikan resep-resep lezat dari seluruh penjuru dunia. Temukan ragam masakan yang menggoda selera, panduan langkah demi langkah yang jelas, dan tips ahli untuk meraih kesuksesan dalam dapur Anda.',
   /** Without additional '/' on the end, e.g. https://theodorusclarence.com */
-  url: 'https://aether.thcl.dev',
+  url: 'localhost:3000',
   type: 'website',
   robots: 'follow, index',
-  /**
-   * No need to be filled, will be populated with openGraph function
-   * If you wish to use a normal image, just specify the path below
-   */
-  image: 'https://tsnext-tw.thcl.dev/images/large-og.png',
 };
 
 type SeoProps = {
@@ -33,12 +27,6 @@ export default function Seo(props: SeoProps) {
     ? `${props.templateTitle} | ${meta.siteName}`
     : meta.title;
 
-  meta['image'] = openGraph({
-    description: meta.description,
-    siteName: props.templateTitle ? meta.siteName : meta.title,
-    templateTitle: props.templateTitle,
-  });
-
   return (
     <Head>
       <title>{meta.title}</title>
@@ -51,12 +39,10 @@ export default function Seo(props: SeoProps) {
       <meta property='og:site_name' content={meta.siteName} />
       <meta property='og:description' content={meta.description} />
       <meta property='og:title' content={meta.title} />
-      <meta name='image' property='og:image' content={meta.image} />
       {/* Twitter */}
       <meta name='twitter:card' content='summary_large_image' />
       <meta name='twitter:title' content={meta.title} />
       <meta name='twitter:description' content={meta.description} />
-      <meta name='twitter:image' content={meta.image} />
       {meta.date && (
         <>
           <meta property='article:published_time' content={meta.date} />
