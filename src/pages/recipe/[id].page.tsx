@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Globe, Utensils, Vegan } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -10,6 +11,7 @@ import NotFoundPage from '@/pages/404.page';
 
 import { ApiResponse } from '@/types/api';
 import { RecipeTypes } from '@/types/entity/recipes';
+import { User } from '@/types/entity/user';
 
 export default function DetailRecipe() {
   const router = useRouter();
@@ -19,6 +21,9 @@ export default function DetailRecipe() {
     `/recipes/${id}`,
   ]);
   const recipe = queryData?.data;
+
+  const { data: queryData2 } = useQuery<ApiResponse<User>>([`/users/${id}`]);
+  const user = queryData2?.data;
 
   if (!recipe) {
     return <NotFoundPage />;
@@ -36,6 +41,25 @@ export default function DetailRecipe() {
             height={500}
             className='mx-auto my-4 max-w-sm rounded-lg shadow'
           />
+          <Typography variant='s2'>
+            by <span className='font-bold'>{user?.name || 'Anonymous'}</span>
+          </Typography>
+          <div className='flex flex-col items-center justify-around gap-4 lg:flex-row'>
+            <div className='flex flex-row items-center gap-1'>
+              <Utensils size={24} />
+              <Typography variant='b3'>{recipe.category}</Typography>
+            </div>
+            <div className='flex flex-row items-center gap-1'>
+              <Vegan size={24} />
+              <Typography variant='b3'>
+                {recipe.vegan ? 'Vegan' : 'Non-Vegan'}
+              </Typography>
+            </div>
+            <div className='flex flex-row items-center gap-1'>
+              <Globe size={24} />
+              <Typography variant='b3'>{recipe.origin}</Typography>
+            </div>
+          </div>
           <Typography variant='h2'>Ingredients</Typography>
           <ul className='mb-4 list-inside list-disc'>
             {recipe.ingredients.map((ingredient, index) => (
