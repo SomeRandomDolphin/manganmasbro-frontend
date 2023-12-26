@@ -61,6 +61,7 @@ function LoginPage() {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     handleLogin(data as LoginFormData);
   };
+
   return (
     <main className='flex h-screen w-full flex-row items-center justify-center'>
       <Seo templateTitle='Login' />
