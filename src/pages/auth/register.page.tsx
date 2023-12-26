@@ -1,5 +1,15 @@
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import {
+  FieldValues,
+  FormProvider,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+
+import api from '@/lib/axios';
+import useMutationToast from '@/hooks/toast/useMutationToast';
 
 import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
@@ -10,12 +20,34 @@ import Typography from '@/components/typography/Typography';
 
 import REGEX from '@/constant/regex';
 
+type RegistrationFormData = {
+  username: string;
+  email: string;
+  password: string;
+};
+
 export default function RegisterPage() {
+  const router = useRouter();
   const methods = useForm({
     mode: 'onTouched',
   });
-  // eslint-disable-next-line unused-imports/no-unused-vars
+
   const { handleSubmit } = methods;
+
+  const { mutate: handleRegister, isLoading } = useMutationToast<
+    void,
+    RegistrationFormData
+  >(
+    useMutation(async (data) => {
+      await api.post('/users/register', data);
+      router.push('/auth/login');
+    })
+  );
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    handleRegister(data as RegistrationFormData);
+  };
+
   return (
     <main className='flex h-screen w-full flex-row items-center justify-center'>
       <Seo templateTitle='Register' />
@@ -30,7 +62,10 @@ export default function RegisterPage() {
       </section>
       <section className='mx-auto w-10/12 lg:w-1/2'>
         <FormProvider {...methods}>
-          <form className='mx-auto flex w-3/4 flex-col gap-6'>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className='mx-auto flex w-3/4 flex-col gap-6'
+          >
             <Typography variant='j1'>Sign Up</Typography>
             <Typography variant='b1'>
               Ready to spice things up? Register now and embark on a culinary
@@ -45,7 +80,8 @@ export default function RegisterPage() {
                     required: 'Email must be filled',
                     pattern: {
                       value: REGEX.USERNAME,
-                      message: 'Username must be alphanumeric',
+                      message:
+                        'Username must be letters, numbers, dots, or underscores',
                     },
                   }}
                   placeholder='Enter your username'
@@ -72,7 +108,8 @@ export default function RegisterPage() {
                     required: 'Password must be filled',
                     pattern: {
                       value: REGEX.PASSWORD,
-                      message: 'Password must be alphanumeric',
+                      message:
+                        'Password must be at least one uppercase letter, one lowercase letter, a number, and a symbol. Ensure your password is a minimum of 12 characters long.',
                     },
                   }}
                   placeholder='Enter your password'
@@ -81,7 +118,12 @@ export default function RegisterPage() {
                   helperText='Include at least one uppercase letter, one lowercase letter, a number, and a symbol. Ensure your password is a minimum of 12 characters long. Mix it up for maximum protection!'
                 />
               </div>
-              <Button size='lg' variant='primary' type='submit'>
+              <Button
+                size='lg'
+                variant='primary'
+                type='submit'
+                isLoading={isLoading}
+              >
                 Register
               </Button>
             </div>
