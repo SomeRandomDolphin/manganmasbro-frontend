@@ -51,7 +51,7 @@ export default function RecipeCard({
         <div className='flex flex-row items-center justify-between'>
           <div className='flex flex-row items-center gap-1'>
             <Globe size={24} />
-            <Typography variant='b3'>{recipe.category}</Typography>
+            <Typography variant='b3'>{recipe.origin}</Typography>
           </div>
         </div>
         <Typography variant='b2'>{recipe.description}</Typography>
