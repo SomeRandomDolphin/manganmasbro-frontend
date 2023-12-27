@@ -5,6 +5,7 @@ import React from 'react';
 
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
+import Seo from '@/components/Seo';
 import Typography from '@/components/typography/Typography';
 
 import NotFoundPage from '@/pages/404.page';
@@ -31,6 +32,7 @@ export default function DetailRecipe() {
 
   return (
     <Layout withHeader={true}>
+      <Seo templateTitle={recipe.name} />
       <main className='mx-auto flex w-11/12 flex-col gap-12 py-16 md:w-10/12'>
         <section className='flex flex-col gap-4 bg-white'>
           <Typography variant='h1'>{recipe.name}</Typography>
